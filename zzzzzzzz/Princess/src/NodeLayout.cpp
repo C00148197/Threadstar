@@ -18,6 +18,10 @@ void NodeLayout::addArcs() {
 	*  ...  add arcs between nodes
 ***********************************************/
 
+
+//add this in loop maybe or something since they all need to know neighbours?
+
+
 	m_nodes[0]->addArc(m_nodes[1]);
 	m_nodes[1]->addArc(m_nodes[0]);
 
@@ -27,6 +31,8 @@ void NodeLayout::addArcs() {
 
 	m_nodes[2]->addArc(m_nodes[3]);
 	m_nodes[3]->addArc(m_nodes[2]);
+
+
 
 
 	m_nodes[3]->addArc(m_nodes[4]);

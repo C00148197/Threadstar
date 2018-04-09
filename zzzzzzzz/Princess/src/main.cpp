@@ -305,7 +305,7 @@ int main()
 
 	cout << "num astar ai/collidable ai " << count << endl;
 
-	m_nodeLayout = nodePositions;
+	m_nodeLayout = nodePositions; //addarcsandstuff
 	astar = new AStar(m_nodeLayout);
 
 
@@ -430,14 +430,7 @@ int main()
 		else
 		{
 			setupSeekPath();
-		
-		//	SDL_Point bab{ enemyVector.at(0)->x, enemyVector.at(0)->y };
-
-			seekPath(deltaTime);
-
-			astar;
-
-			int q = 5;
+			seekPath(deltaTime); //this crap should be added to some threads.
 		}
 		//$$$$$$$
 
@@ -482,21 +475,6 @@ int main()
 				SDL_Rect temp{ nodePositions.at(i).x, nodePositions.at(i).y, 12,12 };
 				SDL_RenderFillRect(renderer, &temp);
 			}
-
-			//nodePositions.push_back(SDL_Point{ 4 * 8, 8 }); //top
-
-			//nodePositions.push_back(SDL_Point{ 4 * 8, 29 * 8 }); //bottom wall 1
-
-
-			//nodePositions.push_back(SDL_Point{ 14 * 8, 8 }); //bottom
-
-			//nodePositions.push_back(SDL_Point{ 14 * 8, 29 * 8 }); //top wall 2
-
-
-
-			//nodePositions.push_back(SDL_Point{ 24 * 8, 8 }); //top
-
-			//nodePositions.push_back(SDL_Point{ 24 * 8, 0 * 8 }); //bottom wall 3
 
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 			SDL_RenderDrawLine(renderer, nodePositions.at(0).x, nodePositions.at(0).y, nodePositions.at(1).x, nodePositions.at(1).y);
