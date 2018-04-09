@@ -8,6 +8,8 @@
 #include "Tile.h"
 #include "AStar.h"
 #include "NodeLayout.h"
+#include <thread>
+
 
 //Our worker thread function
 int worker(void* data);
@@ -30,6 +32,7 @@ std::vector<SDL_Point> nodePositions;
 NodeLayout m_nodeLayout;
 int *layout;
 
+#define THREAD_NUM std::thread::hardware_concurrency()
 
 int starDist;
 
@@ -67,32 +70,8 @@ void normalise(SDL_Point &v) {
 	}
 }
 
-void seek(float deltaTime, SDL_Point v, float dist, bool seekingWorker) {
-	/********************************************//**
-												  *  ...  // seeks to a given position
-												  ***********************************************/
-	float targetSpeed;
+void seek(float deltaTime, SDL_Point v, float dist, bool data) {
 
-	//if (seekingWorker == false) {
-
-	//	if (dist < 70) {
-	//		targetSpeed = 0;
-	//	}
-	//	else if (dist > 200) {
-	//		targetSpeed = 8;
-	//	}
-	//	else {
-	//		targetSpeed = 8 * (dist / 200);
-	//	}
-	//}
-	//else {
-	//	if (dist < 30) {
-	//		// abducts player and returns to patrol
-	//		m_workers.at(m_targetIndex)->setAbducted(true);
-	//		m_indexesOfAbducted.push_back(m_targetIndex);
-	//		m_behaviour = RETURN;
-	//	}
-	//}
 
 	if (capChaser < 250)
 	{
@@ -138,18 +117,7 @@ void seek(float deltaTime, SDL_Point v, float dist, bool seekingWorker) {
 
 		capChaser = 0;
 	}
-//	m_vel = 
-	//v *= targetSpeed;
 
-	//float timeToTarget = 4;
-
-	//m_accel = v - (m_vel / timeToTarget);
-
-	//if (calculateMagnitude(m_accel) > m_maxAccel) {
-	//	normalise(m_accel);
-	//}
-
-	//	m_vel += 1 * deltaTime;
 }
 
 
@@ -162,9 +130,9 @@ void seekPath(float deltaTime) {
 		SDL_Point v1{ r.x,r.y };
 		SDL_Point v2{ enemyVector.at(i)->x,  enemyVector.at(i)->y };
 
-		SDL_Point vecToWorker{ v1.x - v2.x, v1.y - v2.y };
+		SDL_Point vecToTargets{ v1.x - v2.x, v1.y - v2.y };
 
-		distToTar = calculateMagnitude(vecToWorker);
+		distToTar = calculateMagnitude(vecToTargets);
 
 		//// if there are nodes to seek to
 		if (!m_seekPath.empty()) {
@@ -184,17 +152,15 @@ void seekPath(float deltaTime) {
 			}
 			// if the worker is closer than the next node
 			else {
-				seek(deltaTime, vecToWorker, distToTar, true);
+				seek(deltaTime, vecToTargets, distToTar, true);
 			}
 		}
 		// if there aren't nodes to seek to
 		else {
-			seek(deltaTime, vecToWorker, distToTar, true);
+			seek(deltaTime, vecToTargets, distToTar, true);
 		}
 
-	/*	cout << "tar dist" << distToTar << endl;
 
-		cout << "node dist " << distToSeekNode << endl;*/
 
 	}
 }
@@ -222,38 +188,38 @@ void setupSeekPath() {
 	for (int j = 0; j < enemyVector.size(); j++)
 	{
 
-		int indexClosestToWorker;
-		int indexClosestToSweeper;
+		int indexClosestToTarget;
+		int indexClosestToSelf;
 
-		float closestDistWorker = 99999;
-		float closestDistSweeper = 99999;
+		float closestdistTarget = 99999;
+		float closestdistSelf = 99999;
 
 		for (int i = 0; i < m_nodeLayout.getNoOfNodes() - 1; i++) {
-			float distWorker = calculateMagnitude(m_nodeLayout.getNodes()[i]->getPos(), SDL_Point{ r.x,r.y });
+			float distTarget = calculateMagnitude(m_nodeLayout.getNodes()[i]->getPos(), SDL_Point{ r.x,r.y });
 
-			if (distWorker < closestDistWorker) {
-				closestDistWorker = distWorker;
-				indexClosestToWorker = i;
+			if (distTarget < closestdistTarget) {
+				closestdistTarget = distTarget;
+				indexClosestToTarget = i;
 			}
 
-			float distSweeper = calculateMagnitude(m_nodeLayout.getNodes()[i]->getPos(), SDL_Point{ enemyVector.at(j)->x, enemyVector.at(j)->y });
+			float distSelf = calculateMagnitude(m_nodeLayout.getNodes()[i]->getPos(), SDL_Point{ enemyVector.at(j)->x, enemyVector.at(j)->y });
 
-			if (distSweeper < closestDistSweeper) {
-				closestDistSweeper = distSweeper;
-				indexClosestToSweeper = i;
+			if (distSelf < closestdistSelf) {
+				closestdistSelf = distSelf;
+				indexClosestToSelf = i;
 			}
 		}
 
 		if (!m_seekPath.empty()) {
 			// if the node that is closest (the destination) to the player has changed
-			if (m_nodeLayout.getNodes()[indexClosestToWorker] != m_seekPath.at(m_seekPath.size() - 1)) {
+			if (m_nodeLayout.getNodes()[indexClosestToTarget] != m_seekPath.at(m_seekPath.size() - 1)) {
 				m_seekPath.clear();
-				astar->calculatePath(m_nodeLayout.getNodes()[indexClosestToWorker], m_nodeLayout.getNodes()[indexClosestToSweeper], m_seekPath);
+				astar->calculatePath(m_nodeLayout.getNodes()[indexClosestToTarget], m_nodeLayout.getNodes()[indexClosestToSelf], m_seekPath);
 			}
 		}
 		else {
 			// create initial path
-			astar->calculatePath(m_nodeLayout.getNodes()[indexClosestToWorker], m_nodeLayout.getNodes()[indexClosestToSweeper], m_seekPath);
+			astar->calculatePath(m_nodeLayout.getNodes()[indexClosestToTarget], m_nodeLayout.getNodes()[indexClosestToSelf], m_seekPath);
 		}
 
 	}
@@ -263,6 +229,9 @@ void setupSeekPath() {
 
 int main()
 {
+
+	
+
 	SDL_Window* gameWindow = SDL_CreateWindow("TEST", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 512, 512, SDL_WINDOW_SHOWN);
 	//SDL_Renderer* gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_PRESENTVSYNC);
 	SDL_Event *e = new SDL_Event();
@@ -274,6 +243,8 @@ int main()
 	float deltaTime = 0;
 	unsigned int currentTime = 0;
 	srand(time(NULL));
+
+	cout << "thread stuff " << THREAD_NUM << endl;
 
 	bool debug = false;
 
@@ -317,9 +288,6 @@ int main()
 
 	nodePositions.push_back(SDL_Point{ 14 * 16, 31 * 16 }); //top wall 2
 
-
-//	nodePositions.push_back(SDL_Point{ 14 * 16, 33 * 16 }); //bottom wall 3
-
 	nodePositions.push_back(SDL_Point{ 24 * 16, 8 }); //top
 
 
@@ -334,6 +302,7 @@ int main()
 		enemyVector.push_back(new SDL_Rect({ 486, 256, 16, 16 }));
 		count = i;
 	}
+
 	cout << "num astar ai/collidable ai " << count << endl;
 
 	m_nodeLayout = nodePositions;
