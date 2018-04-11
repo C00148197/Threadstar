@@ -97,5 +97,8 @@
     <ClInclude Include="include\ai.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Vec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

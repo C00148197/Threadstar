@@ -476,20 +476,20 @@ int main()
 				SDL_RenderFillRect(renderer, &temp);
 			}
 
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-			SDL_RenderDrawLine(renderer, nodePositions.at(0).x, nodePositions.at(0).y, nodePositions.at(1).x, nodePositions.at(1).y);
-			SDL_RenderDrawLine(renderer, nodePositions.at(1).x, nodePositions.at(1).y, nodePositions.at(2).x, nodePositions.at(2).y);
-			SDL_RenderDrawLine(renderer, nodePositions.at(2).x, nodePositions.at(2).y, nodePositions.at(3).x, nodePositions.at(3).y);
-			SDL_RenderDrawLine(renderer, nodePositions.at(3).x, nodePositions.at(3).y, nodePositions.at(4).x, nodePositions.at(4).y);
-			SDL_RenderDrawLine(renderer, nodePositions.at(4).x, nodePositions.at(4).y, nodePositions.at(5).x, nodePositions.at(5).y);
+			//SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+			//SDL_RenderDrawLine(renderer, nodePositions.at(0).x, nodePositions.at(0).y, nodePositions.at(1).x, nodePositions.at(1).y);
+			//SDL_RenderDrawLine(renderer, nodePositions.at(1).x, nodePositions.at(1).y, nodePositions.at(2).x, nodePositions.at(2).y);
+			//SDL_RenderDrawLine(renderer, nodePositions.at(2).x, nodePositions.at(2).y, nodePositions.at(3).x, nodePositions.at(3).y);
+			//SDL_RenderDrawLine(renderer, nodePositions.at(3).x, nodePositions.at(3).y, nodePositions.at(4).x, nodePositions.at(4).y);
+			//SDL_RenderDrawLine(renderer, nodePositions.at(4).x, nodePositions.at(4).y, nodePositions.at(5).x, nodePositions.at(5).y);
 
-			//bonus
-			SDL_RenderDrawLine(renderer, nodePositions.at(1).x, nodePositions.at(1).y, nodePositions.at(3).x, nodePositions.at(3).y);
-			SDL_RenderDrawLine(renderer, nodePositions.at(2).x, nodePositions.at(2).y, nodePositions.at(4).x, nodePositions.at(4).y);
+			////bonus
+			//SDL_RenderDrawLine(renderer, nodePositions.at(1).x, nodePositions.at(1).y, nodePositions.at(3).x, nodePositions.at(3).y);
+			//SDL_RenderDrawLine(renderer, nodePositions.at(2).x, nodePositions.at(2).y, nodePositions.at(4).x, nodePositions.at(4).y);
 
 	
-			SDL_RenderDrawLine(renderer, nodePositions.at(3).x, nodePositions.at(3).y, nodePositions.at(6).x, nodePositions.at(6).y);
-			SDL_RenderDrawLine(renderer, nodePositions.at(4).x, nodePositions.at(4).y, nodePositions.at(6).x, nodePositions.at(6).y);
+			//SDL_RenderDrawLine(renderer, nodePositions.at(3).x, nodePositions.at(3).y, nodePositions.at(6).x, nodePositions.at(6).y);
+			//SDL_RenderDrawLine(renderer, nodePositions.at(4).x, nodePositions.at(4).y, nodePositions.at(6).x, nodePositions.at(6).y);
 			SDL_RenderPresent(renderer);
 
 		//	cout << "test tick" << endl;

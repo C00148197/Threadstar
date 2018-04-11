@@ -20,7 +20,7 @@
 #include <memory>
 #include <math.h>
 #include <typeinfo>
-
+#include "Vec.h"
 #include <list>
 #include <queue>
 #include <algorithm>

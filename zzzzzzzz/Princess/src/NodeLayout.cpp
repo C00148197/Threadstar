@@ -13,6 +13,17 @@ NodeLayout::NodeLayout(std::vector<SDL_Point> &nodeData) {
 	addArcs();
 }
 
+
+void NodeLayout::setNodesPerLine(int incPerLine)
+{
+	nodesPerLines = incPerLine;
+}
+
+void NodeLayout::setSize(int incSize)
+{
+	size = incSize;
+}
+
 void NodeLayout::addArcs() {
 	/********************************************//**
 	*  ...  add arcs between nodes
@@ -20,38 +31,37 @@ void NodeLayout::addArcs() {
 
 
 //add this in loop maybe or something since they all need to know neighbours?
+	int col = 1;
 
+	for (int i = 0; i < size; i++) {
+		if (i == (nodesPerLines * col)) {
+			col++;
+		}
 
-	m_nodes[0]->addArc(m_nodes[1]);
-	m_nodes[1]->addArc(m_nodes[0]);
+		if ((i + nodesPerLines) < size) {
+			m_nodes[i]->addArc(m_nodes[i] + nodesPerLines);
+			m_nodes[i+nodesPerLines]->addArc(m_nodes[i]);
+		}
 
+		if ((i + 1) < size) {
+			if (i < (nodesPerLines * col) - 1) {
+				m_nodes[i]->addArc(m_nodes[i] + 1);
+				m_nodes[i+1]->addArc(m_nodes[i]);
+			}
+		}
 
-	m_nodes[1]->addArc(m_nodes[2]);
-	m_nodes[2]->addArc(m_nodes[1]);
+		if (i + 1 + nodesPerLines < size) {
+			if (i < (nodesPerLines * col) - 1) {
+				m_nodes[i]->addArc(m_nodes[i] + 1 + nodesPerLines);
+				m_nodes[i + 1 + nodesPerLines]->addArc(m_nodes[i]);
+			}
+		}
 
-	m_nodes[2]->addArc(m_nodes[3]);
-	m_nodes[3]->addArc(m_nodes[2]);
-
-
-
-
-	m_nodes[3]->addArc(m_nodes[4]);
-	m_nodes[4]->addArc(m_nodes[3]);
-
-
-	m_nodes[4]->addArc(m_nodes[5]);
-	m_nodes[5]->addArc(m_nodes[4]);
-
-	//bonus
-	m_nodes[1]->addArc(m_nodes[3]);
-	m_nodes[3]->addArc(m_nodes[1]);
-	//w
-
-	m_nodes[2]->addArc(m_nodes[4]);
-	m_nodes[4]->addArc(m_nodes[2]);
-
-	m_nodes[4]->addArc(m_nodes[6]);
-	m_nodes[6]->addArc(m_nodes[4]);
+		if ((i + 1) - nodesPerLines >= 0) {
+			m_nodes[i]->addArc(m_nodes[(i + 1) - nodesPerLines]);
+			m_nodes[(i + 1) - nodesPerLines]->addArc(m_nodes[i]);
+		}
+	}
 
 }
 

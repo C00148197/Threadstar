@@ -48,6 +48,7 @@
     <ClInclude Include="include\NodeLayout.h" />
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\Tile.h" />
+    <ClInclude Include="include\Vec.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
