@@ -1,6 +1,6 @@
 #include "Node.h"
 
-Node::Node(SDL_Point pos, int id) {
+Node::Node(Vector pos, int id) {
 	m_pos = pos;
 	m_id = id;
 }
@@ -14,7 +14,7 @@ void Node::addArc(Node *n) {
 	m_arcs.push_back(arc);
 }
 
-float Node::calculateArcWeight(SDL_Point otherNodePos) {
+float Node::calculateArcWeight(Vector otherNodePos) {
 	/********************************************//**
  *  ...  weight is the distance between the nodes
  ***********************************************/
@@ -22,7 +22,7 @@ float Node::calculateArcWeight(SDL_Point otherNodePos) {
 	return sqrt(((otherNodePos.x - m_pos.x) * (otherNodePos.x - m_pos.x)) + ((otherNodePos.y - m_pos.y) * (otherNodePos.y - m_pos.y)));
 }
 
-SDL_Point Node::getPos() {
+Vector Node::getPos() {
 	return m_pos;
 }
 

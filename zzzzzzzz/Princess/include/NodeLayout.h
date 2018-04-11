@@ -9,7 +9,7 @@
 class NodeLayout {
 public:
 	NodeLayout() {}
-	NodeLayout(std::vector<SDL_Point> &nodeData);
+	NodeLayout(std::vector<Vector> &nodeData);
 
 	int getNoOfNodes();
 
@@ -26,7 +26,7 @@ private:
 
 	void addArcs(); // adds connections between nodes
 
-	int size;
+	int size = 20;
 
-	int nodesPerLines;
+	int nodesPerLines = 20;
 };

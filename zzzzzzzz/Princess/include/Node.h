@@ -8,12 +8,12 @@
 class Node {
 public:
 	Node() {}
-	Node(SDL_Point pos, int id);
+	Node(Vector pos, int id);
 
 	void addArc(Node *n);
-	float calculateArcWeight(SDL_Point otherNodePos);
+	float calculateArcWeight(Vector otherNodePos);
 
-	SDL_Point getPos();
+	Vector getPos();
 
 	int getID();
 
@@ -34,7 +34,7 @@ public:
 private:
 	int m_id;
 
-	SDL_Point m_pos;
+	Vector m_pos;
 
 	bool m_marked; // if the node has been visited
 

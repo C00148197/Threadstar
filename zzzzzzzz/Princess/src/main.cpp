@@ -22,13 +22,13 @@ SDL_Rect r;
 std::vector<SDL_Rect*> enemyVector;
 
 std::vector<Tile*> tileVector;
-SDL_Point velo;
+Vector velo;
 
 int increment = -1;
 int dir = 0;
 int GAME_SCALE = 3;
 
-std::vector<SDL_Point> nodePositions;
+std::vector<Vector> nodePositions;
 NodeLayout m_nodeLayout;
 int *layout;
 
@@ -43,7 +43,7 @@ bool m_targetChosen = false;
 int distToTar;
 int distToSeekNode;
 
-SDL_Point m_vel;
+Vector m_vel;
 
 bool case2 = false;
 
@@ -51,16 +51,16 @@ int cap = 500;
 
 int capChaser = 0;
 
-float calculateMagnitude(SDL_Point vec1, SDL_Point vec2)
+float calculateMagnitude(Vector vec1, Vector vec2)
 {
 	return sqrt(((vec2.x - vec1.x) * (vec2.x - vec1.x)) + ((vec2.y - vec1.y) * (vec2.y - vec1.y)));
 }
 
-float calculateMagnitude(SDL_Point vec) {
+float calculateMagnitude(Vector vec) {
 	return sqrt((vec.x * vec.x) + (vec.y * vec.y));
 }
 
-void normalise(SDL_Point &v) {
+void normalise(Vector &v) {
 	float magnitude = calculateMagnitude(v);
 
 	if (magnitude > 0)
@@ -70,7 +70,7 @@ void normalise(SDL_Point &v) {
 	}
 }
 
-void seek(float deltaTime, SDL_Point v, float dist, bool data) {
+void seek(float deltaTime, Vector v, float dist, bool data) {
 
 
 	if (capChaser < 250)
@@ -127,21 +127,23 @@ void seekPath(float deltaTime) {
 	{
 
 
-		SDL_Point v1{ r.x,r.y };
-		SDL_Point v2{ enemyVector.at(i)->x,  enemyVector.at(i)->y };
+		Vector v1{ r.x,r.y };
+		Vector v2{ enemyVector.at(i)->x,  enemyVector.at(i)->y };
 
-		SDL_Point vecToTargets{ v1.x - v2.x, v1.y - v2.y };
+		Vector vecToTargets{ v1.x - v2.x, v1.y - v2.y };
 
 		distToTar = calculateMagnitude(vecToTargets);
+
+	
 
 		//// if there are nodes to seek to
 		if (!m_seekPath.empty()) {
 			// directional vector to next node
-			SDL_Point vecToNextPoint = SDL_Point{ m_seekPath.at(0)->getPos().x - v2.x, m_seekPath.at(0)->getPos().y - v2.y };
+			Vector vecToNextPoint = Vector{ m_seekPath.at(0)->getPos().x - v2.x, m_seekPath.at(0)->getPos().y - v2.y };
 
 			// distance to next node
 			distToSeekNode = calculateMagnitude(vecToNextPoint);
-
+			cout << m_seekPath.size() << endl;
 			// if the next node is closer than the worker
 			if (distToSeekNode < distToTar) {
 				seek(deltaTime, vecToNextPoint, distToSeekNode, false);
@@ -174,7 +176,7 @@ void chooseTarget()
 	float closestDistTarget = 99999;
 
 	cout << "choose tar" << endl;
-	float dist = calculateMagnitude(SDL_Point{ r.x, r.y }, SDL_Point{ enemyVector.at(0)->x, enemyVector.at(0)->y });
+	float dist = calculateMagnitude(Vector{ r.x, r.y }, Vector{ enemyVector.at(0)->x, enemyVector.at(0)->y });
 
 	if (dist < closestDistTarget) 
 	{
@@ -195,14 +197,14 @@ void setupSeekPath() {
 		float closestdistSelf = 99999;
 
 		for (int i = 0; i < m_nodeLayout.getNoOfNodes() - 1; i++) {
-			float distTarget = calculateMagnitude(m_nodeLayout.getNodes()[i]->getPos(), SDL_Point{ r.x,r.y });
+			float distTarget = calculateMagnitude(m_nodeLayout.getNodes()[i]->getPos(), Vector{ r.x,r.y });
 
 			if (distTarget < closestdistTarget) {
 				closestdistTarget = distTarget;
 				indexClosestToTarget = i;
 			}
 
-			float distSelf = calculateMagnitude(m_nodeLayout.getNodes()[i]->getPos(), SDL_Point{ enemyVector.at(j)->x, enemyVector.at(j)->y });
+			float distSelf = calculateMagnitude(m_nodeLayout.getNodes()[i]->getPos(), Vector{ enemyVector.at(j)->x, enemyVector.at(j)->y });
 
 			if (distSelf < closestdistSelf) {
 				closestdistSelf = distSelf;
@@ -232,7 +234,7 @@ int main()
 
 	
 
-	SDL_Window* gameWindow = SDL_CreateWindow("TEST", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 512, 512, SDL_WINDOW_SHOWN);
+	SDL_Window* gameWindow = SDL_CreateWindow("TEST", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1028, 1028, SDL_WINDOW_SHOWN);
 	//SDL_Renderer* gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_PRESENTVSYNC);
 	SDL_Event *e = new SDL_Event();
 
@@ -242,13 +244,13 @@ int main()
 	unsigned int lastTime = 0;
 	float deltaTime = 0;
 	unsigned int currentTime = 0;
-	srand(time(NULL));
+	std::srand(time(NULL));
 
 	cout << "thread stuff " << THREAD_NUM << endl;
 
 	bool debug = false;
 
-	srand(time(NULL));
+	//srand(time(NULL));
 
 	const int SCREEN_FPS = 60;
 
@@ -272,32 +274,82 @@ int main()
 	SDL_Renderer* renderer = NULL;
 	renderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED);
 
-	r.x = 16;
+	r.x = 64;
 	r.y = 448;
 	r.w = 16;
 	r.h = 16;
 
 	//why even
 
-	nodePositions.push_back(SDL_Point{ 4 *16, 256 }); //top
+	//nodePositions.push_back(Vector{ 4 *16, 256 }); //top
 
-	nodePositions.push_back(SDL_Point{ 4* 16, 31*16 }); //bottom wall 1
-
-
-	nodePositions.push_back(SDL_Point{ 14 * 16, 8 }); //bottom
-
-	nodePositions.push_back(SDL_Point{ 14 * 16, 31 * 16 }); //top wall 2
-
-	nodePositions.push_back(SDL_Point{ 24 * 16, 8 }); //top
+	//nodePositions.push_back(Vector{ 4* 16, 31*16 }); //bottom wall 1
 
 
-	nodePositions.push_back(SDL_Point{ 31 * 16, 16 * 16 }); //top
+	//nodePositions.push_back(Vector{ 14 * 16, 8 }); //bottom
+
+	//nodePositions.push_back(Vector{ 14 * 16, 31 * 16 }); //top wall 2
+
+	//nodePositions.push_back(Vector{ 24 * 16, 8 }); //top
 
 
-	nodePositions.push_back(SDL_Point{ 24 * 16, 31 * 16 }); //top wall 2
+	//nodePositions.push_back(Vector{ 31 * 16, 16 * 16 }); //top
+
+
+	//nodePositions.push_back(Vector{ 24 * 16, 31 * 16 }); //top wall 2
+
+	
+	
+	////////4444444444444444
+	for (int i = 0; i < 256 / 4; i++) {
+		for (int j = 0; j < 144 / 4; j++) {
+			if (i == 0) {
+				tileVector.push_back(new Tile(i * 20, j * 20, 20, 20, true));
+				nodePositions.push_back(Vector{ i * 20, j * 20 });
+				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
+			}
+			else if (i == 255 / 4) {
+				tileVector.push_back(new Tile( i * 20, j * 20 , 20, 20, true));
+				nodePositions.push_back(Vector{ i * 20, j * 20 });
+				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
+			}
+			else if (j == 0) {
+				tileVector.push_back(new Tile(i * 20, j * 20 , 20, 20, true));
+				nodePositions.push_back(Vector{ i * 20, j * 20 });
+				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
+			}
+			else if (j == 143 / 4) {
+				tileVector.push_back(new Tile(i * 20, j * 20 , 20, 20, true));
+				nodePositions.push_back(Vector{ i * 20, j * 20 });
+				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
+			}
+			else if (i > 40 / 4 && i <= 55 / 4 && j > 0 / 4 && j <= 125 / 4) {
+				tileVector.push_back(new Tile(i * 20, j * 20 , 20, 20, true));
+				nodePositions.push_back(Vector{ i * 20, j * 20 });
+				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
+			}
+			else if (i > 110 / 4 && i <= 125 / 4 && j > 10 / 4 && j <= 135 / 4) {
+				tileVector.push_back(new Tile(i * 20, j * 20, 20, 20, true));
+				nodePositions.push_back(Vector{ i * 20, j * 20 });
+				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
+			}
+			else if (i > 180 / 4 && i <= 195 / 4 && j > 20 / 4 && j <= 110 / 4) {
+				tileVector.push_back(new Tile(i * 20, j * 20, 20, 20, true));
+				nodePositions.push_back(Vector{ i * 20, j * 20 });
+				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
+			}
+			else {
+				nodePositions.push_back(Vector{ i * 20, j * 20 });
+				tileVector.push_back(new Tile(i * 20, j * 20, 20, 20, false));
+				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, "Floor");
+			}
+		}
+	}
+
+	///////////////444444444444444444444
 
 	int count = 0;
-	for (int i = 0; i < 500; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		enemyVector.push_back(new SDL_Rect({ 486, 256, 16, 16 }));
 		count = i;
@@ -308,39 +360,39 @@ int main()
 	m_nodeLayout = nodePositions; //addarcsandstuff
 	astar = new AStar(m_nodeLayout);
 
+	//set size and nodes per lines pls they're junk.
 
 
-
-	for (int i = 0; i < 32; i++)
-	{
-		for (int j = 0; j < 32; j++)
-		{
-			bool wall = false;
-
-
-			if (i == 5 && j >= 0 && j < 27)
-			{
-				wall = true;
-			}
+	//for (int i = 0; i < 32; i++)
+	//{
+	//	for (int j = 0; j < 32; j++)
+	//	{
+	//		bool wall = false;
 
 
-			if (i == 15 && j > 5 && j < 27)
-			{
-				wall = true;
-			}
+	//		if (i == 5 && j >= 0 && j < 27)
+	//		{
+	//			wall = true;
+	//		}
 
-			if (i == 25 && j > 5 && j < 32)
-			{
-				wall = true;
-			}
-			
-			tileVector.push_back(new Tile(i * 16, j * 16, 16, 16, wall));
-		}
-	}
+
+	//		if (i == 15 && j > 5 && j < 27)
+	//		{
+	//			wall = true;
+	//		}
+
+	//		if (i == 25 && j > 5 && j < 32)
+	//		{
+	//			wall = true;
+	//		}
+	//		
+	//		tileVector.push_back(new Tile(i * 16, j * 16, 16, 16, wall));
+	//	}
+	//}
 
 	/////$$$$$$$$$$$$$$$$
 	//Run the threads
-	srand(SDL_GetTicks());
+	std::srand(SDL_GetTicks());
 	SDL_Thread* threadA = SDL_CreateThread(worker, "Thread A", (void*)"Thread A");
 	SDL_Delay(16 + rand() % 32);
 	SDL_Thread* threadB = SDL_CreateThread(worker, "Thread B", (void*)"Thread B");
@@ -351,7 +403,7 @@ int main()
 	while (7 == 7)
 	{
 		dir = 0;
-		velo = SDL_Point{ 0,0 };
+		velo = Vector{ 0,0 };
 
 		while (SDL_PollEvent(e))
 		{
@@ -469,12 +521,12 @@ int main()
 
 			SDL_RenderFillRect(renderer, enemyVector.at(0));
 
-			for (int i = 0; i < nodePositions.size(); i++)
-			{
-				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 200); //yellow
-				SDL_Rect temp{ nodePositions.at(i).x, nodePositions.at(i).y, 12,12 };
-				SDL_RenderFillRect(renderer, &temp);
-			}
+			//for (int i = 0; i < nodePositions.size(); i++)
+			//{
+			//	SDL_SetRenderDrawColor(renderer, 0, 255, 0, 200); //yellow
+			//	SDL_Rect temp{ nodePositions.at(i).x, nodePositions.at(i).y, 12,12 };
+			//	SDL_RenderFillRect(renderer, &temp);
+			//}
 
 			//SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 			//SDL_RenderDrawLine(renderer, nodePositions.at(0).x, nodePositions.at(0).y, nodePositions.at(1).x, nodePositions.at(1).y);
@@ -532,7 +584,7 @@ int worker(void* data)
 		increment++;
 
 
-		if (increment > 1023)
+		if (increment > 478)
 		{
 			increment = 0;
 		}
@@ -541,7 +593,7 @@ int worker(void* data)
 
 		int tempIndex = increment;
 
-		if (tempIndex > 1023)
+		if (tempIndex > 478) //make a val for this plx
 		{
 			tempIndex = 0;
 		}

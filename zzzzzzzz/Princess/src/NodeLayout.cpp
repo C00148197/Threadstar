@@ -1,6 +1,6 @@
 #include "NodeLayout.h"
 
-NodeLayout::NodeLayout(std::vector<SDL_Point> &nodeData) {
+NodeLayout::NodeLayout(std::vector<Vector> &nodeData) {
 	m_noOfNodes = nodeData.size() + 1;
 
 	m_nodes = new Node*[m_noOfNodes];
