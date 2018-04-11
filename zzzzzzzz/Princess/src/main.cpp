@@ -92,20 +92,20 @@ void seek(float deltaTime, Vector v, float dist, bool data) {
 
 		if (vX > 0 && vX < 1)
 		{
-			vX = 1;
+			vX = 10;
 		}
 		if (vX < 0 && vX > -1)
 		{
-			vX = -1;
+			vX = -10;
 		}
 
 		if (vY > 0 && vY < 1)
 		{
-			vY = 1;
+			vY = 10;
 		}
 		if (vY < 0 && vY > -1)
 		{
-			vY = -1;
+			vY = -10;
 		}
 	//	cout << vX << endl;
 
@@ -148,7 +148,7 @@ void seekPath(float deltaTime) {
 			if (distToSeekNode < distToTar) {
 				seek(deltaTime, vecToNextPoint, distToSeekNode, false);
 				//cout << distToTar << endl;
-				if (distToSeekNode < 10) {
+				if (distToSeekNode < 1) {
 					m_seekPath.erase(m_seekPath.begin());
 				}
 			}
@@ -301,47 +301,42 @@ int main()
 	
 	
 	////////4444444444444444
-	for (int i = 0; i < 256 / 4; i++) {
-		for (int j = 0; j < 144 / 4; j++) {
+	for (int i = 0; i < 256 / 4; i++) 
+	{
+		for (int j = 0; j < 144 / 4; j++) 
+		{
 			if (i == 0) {
 				tileVector.push_back(new Tile(i * 20, j * 20, 20, 20, true));
 				nodePositions.push_back(Vector{ i * 20, j * 20 });
-				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
 			}
 			else if (i == 255 / 4) {
 				tileVector.push_back(new Tile( i * 20, j * 20 , 20, 20, true));
 				nodePositions.push_back(Vector{ i * 20, j * 20 });
-				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
 			}
 			else if (j == 0) {
 				tileVector.push_back(new Tile(i * 20, j * 20 , 20, 20, true));
 				nodePositions.push_back(Vector{ i * 20, j * 20 });
-				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
 			}
 			else if (j == 143 / 4) {
 				tileVector.push_back(new Tile(i * 20, j * 20 , 20, 20, true));
 				nodePositions.push_back(Vector{ i * 20, j * 20 });
-				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
+
 			}
 			else if (i > 40 / 4 && i <= 55 / 4 && j > 0 / 4 && j <= 125 / 4) {
 				tileVector.push_back(new Tile(i * 20, j * 20 , 20, 20, true));
 				nodePositions.push_back(Vector{ i * 20, j * 20 });
-				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
 			}
 			else if (i > 110 / 4 && i <= 125 / 4 && j > 10 / 4 && j <= 135 / 4) {
 				tileVector.push_back(new Tile(i * 20, j * 20, 20, 20, true));
 				nodePositions.push_back(Vector{ i * 20, j * 20 });
-				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
 			}
 			else if (i > 180 / 4 && i <= 195 / 4 && j > 20 / 4 && j <= 110 / 4) {
 				tileVector.push_back(new Tile(i * 20, j * 20, 20, 20, true));
 				nodePositions.push_back(Vector{ i * 20, j * 20 });
-				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, true);
 			}
 			else {
 				nodePositions.push_back(Vector{ i * 20, j * 20 });
 				tileVector.push_back(new Tile(i * 20, j * 20, 20, 20, false));
-				//m_layout.addNode(Vector{ i * 20.0f, j * 20.0f }, "Floor");
 			}
 		}
 	}
@@ -349,7 +344,7 @@ int main()
 	///////////////444444444444444444444
 
 	int count = 0;
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		enemyVector.push_back(new SDL_Rect({ 486, 256, 16, 16 }));
 		count = i;
@@ -527,7 +522,7 @@ int main()
 			//	SDL_Rect temp{ nodePositions.at(i).x, nodePositions.at(i).y, 12,12 };
 			//	SDL_RenderFillRect(renderer, &temp);
 			//}
-
+	/////		SDL_RenderDrawLine(renderer, nodePositions.at(0).x, nodePositions.at(0).y, nodePositions.at(1).x, nodePositions.at(1).y);
 			//SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 			//SDL_RenderDrawLine(renderer, nodePositions.at(0).x, nodePositions.at(0).y, nodePositions.at(1).x, nodePositions.at(1).y);
 			//SDL_RenderDrawLine(renderer, nodePositions.at(1).x, nodePositions.at(1).y, nodePositions.at(2).x, nodePositions.at(2).y);

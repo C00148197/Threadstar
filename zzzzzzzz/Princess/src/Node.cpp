@@ -11,15 +11,25 @@ void Node::addArc(Node *n) {
 	arc.setNode(n);
 	arc.setWeight(calculateArcWeight(n->getPos()));
 
+
+
+	int temp = m_id;
+
+	int q = 5;
+
+	if (m_id == 2188)
+	{
+		std::cout << "what " << std::endl;
+	}
+
+
 	m_arcs.push_back(arc);
 }
 
 float Node::calculateArcWeight(Vector otherNodePos) {
-	/********************************************//**
- *  ...  weight is the distance between the nodes
- ***********************************************/
 
-	return sqrt(((otherNodePos.x - m_pos.x) * (otherNodePos.x - m_pos.x)) + ((otherNodePos.y - m_pos.y) * (otherNodePos.y - m_pos.y)));
+
+	return 1;//sqrt(((otherNodePos.x - m_pos.x) * (otherNodePos.x - m_pos.x)) + ((otherNodePos.y - m_pos.y) * (otherNodePos.y - m_pos.y)));
 }
 
 Vector Node::getPos() {
